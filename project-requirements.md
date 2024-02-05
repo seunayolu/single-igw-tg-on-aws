@@ -12,7 +12,7 @@ In the absence of AWS Transit Gateway, the traditional approach involves combini
 
 Moreover, while this centralized architecture is designed around a pair of shared NAT gateways, it is adaptable to incorporate other security appliances. These appliances can perform tasks such as traffic capture, policy enforcement, web filtering, provided they possess the necessary capabilities to fulfill the NAT function and adhere to required route configurations. This flexibility enables the modification of the architecture to align with specific security and compliance requirements.
 
-![Project-Architecture](./Project-Images/Single-IGW.png | width=70%)
+![](./Project-Images/Single-IGW.png | width=70%)
 
 ## Creating and Configuring the VPCs
 
