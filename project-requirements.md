@@ -77,4 +77,66 @@ In the following steps, we guide you through the deployment of a new transit gat
 
 By meticulously completing these steps, you establish a cohesive integration between the transit gateway and all three VPCs, paving the way for streamlined routing of internet-bound traffic through the designated NAT gateway.
 
+### Configuring AWS Transit Gateway Route Tables 🌐
+
+1. Choose **AWS Transit Gateway Route Tables** and create two route tables:
+   - Name the first route table as `Egress-RouteTable`.
+   - Name the second route table as `App-RouteTable`.
+   - Associate both route tables with the `TGW-Internet` transit gateway.
+
+2. Under **AWS Transit Gateway Route Tables**:
+   - Choose `App-RouteTable`.
+   - Navigate to **Associations** and create an association.
+   - Associate both `App1-Attachment` and `App2-Attachment` to this route table.
+
+3. On the same `App-RouteTable`, go to **Routes**:
+   - Create a route by entering `0.0.0.0/0` and choose the attachment: `Egress-VPC`.
+   - Add additional routes: `10.0.0.0/8` with the Action set to **Blackhole** to ensure VPCs can’t communicate with each other through the NAT gateway.
+
+4. Under **AWS Transit Gateway Route Tables**:
+   - Choose `Egress-RouteTable`.
+   - Navigate to **Associations** and create an association.
+   - Associate `Egress-Attachment` to this route table.
+
+5. On the same `Egress-RouteTable`, go to **Routes**:
+   - Choose **Create route** and enter `10.0.0.0/16` with the attachment `App1-Attachment`.
+   - Enter a second route for `10.1.0.0/16` with the attachment `App2-Attachment`.
+
+6. In the left navigation pane, choose **Route Tables**:
+   - Edit the default route table associated with `App1-VPC` and `App2-VPC`.
+   - Add a route for `0.0.0.0/0` and set `TGW-Internet` as the target.
+
+7. Edit the `Egress-Public-RT` route table associated with the `Egress-VPC`:
+   - Add routes for `10.0.0.0/16` and `10.1.0.0/16`.
+   - Set `TGW-Internet` as the target.
+
+These steps provide a comprehensive guide to configuring AWS Transit Gateway Route Tables, ensuring effective management of traffic within the VPC network architecture.
+
+### Launching Test Instances 🚀
+
+To evaluate and test the configured setup, proceed with launching three EC2 instances as follows:
+
+### Bastion Host in Egress-VPC:
+Launch an EC2 Instance in the `Egress-VPC` with the following configuration:
+
+- **AMI:** Amazon Linux 2 AMI (HVM)
+- **Instance Type:** t2.micro
+- **Network:** Egress-VPC
+- **Subnet:** Egress-Public-AZ1
+- **Auto Assign Public IP:** Enabled
+- **Tags:** Add a tag with Key: Name and Value: Bastion
+- **Security Group:** Create a new security group to allow SSH traffic from your Public IP address (you can find your current IP address by browsing to [www.myipaddress.com](http://www.myipaddress.com))
+
+### Instances in App1-VPC and App2-VPC:
+Launch two EC2 instances, one in `App1-VPC` and the other in `App2-VPC` with the following configuration:
+
+- **AMI:** Amazon Linux 2 AMI (HVM)
+- **Instance Type:** t2.micro
+- **Network:** App1-VPC (for the first instance) and App2-VPC (for the second instance)
+- **Subnet:** App1-Private-AZ1 (for App1-VPC) and App2-Private-AZ1 (for App2-VPC)
+- **Auto Assign Public IP:** Disabled
+- **Tags:** Add a tag with Key: Name and Value: App1VM (for App1-VPC) and App2VM (for App2-VPC)
+- **Inbound Security Group:** Create a new security group to allow SSH & All ICMP – IPV4 traffic from 10.0.0.0/16, 10.1.0.0/16 & 192.168.0.0/16.
+
+Repeat the configuration for the second EC2 instance in `App2-VPC`.
 
