@@ -18,17 +18,27 @@ Moreover, while this centralized architecture is designed around a pair of share
 
 1. Create the following three VPCs: Egress-VPC, App1-VPC, and App2-VPC. Provide values for each, as shown in the following table. For more information, see [Getting Started with Amazon VPC](https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/GetStarted.html).
    
-   | VPC name     | Tag       | IPv4 CIDR       | IPv6 CIDR       | Tenancy  |
-   | ------------ | --------- | --------------- | --------------- | -------- |
-   | Egress-VPC   |           | 192.168.0.0/16  | No IPv6 CIDR Block | Default  |
-   | App1-VPC     |           | 10.0.0.0/16     | No IPv6 CIDR Block | Default  |
-   | App2-VPC     |           | 10.1.0.0/16     | No IPv6 CIDR Block | Default  |
+   | VPC name     | IPv4 CIDR       | IPv6 CIDR       | Tenancy  |
+   | ------------ | --------------- | --------------- | -------- |
+   | Egress-VPC   | 192.168.0.0/16  | No IPv6 CIDR Block | Default  |
+   | App1-VPC     | 10.0.0.0/16     | No IPv6 CIDR Block | Default  |
+   | App2-VPC     | 10.1.0.0/16     | No IPv6 CIDR Block | Default  |
 
 
 ## Create Subnets in Each VPCs
 
 2. Create the subnets in each of the VPCs as described in the following table. In the next steps, you configure the route tables to make some of these subnets public.
 
+| Subnet name           | Tag             | VPC         | AZ           | IPv4 CIDR       |
+| --------------------- | --------------- | ----------- | ------------ | --------------- |
+| Egress-Public-AZ1     | Egress-VPC      | eu-west-3a  | 192.168.1.0/24  |
+| Egress-Public-AZ2     | Egress-VPC      | eu-west-3b  | 192.168.2.0/24  |
+| Egress-Private-AZ1    | Egress-VPC      | eu-west-3a  | 192.168.3.0/24  |
+| Egress-Private-AZ2    | Egress-VPC      | eu-west-3b  | 192.168.4.0/24  |
+| App1-Private-AZ1      | App1-VPC        | eu-west-3a  | 10.0.1.0/24     |
+| App1-Private-AZ2      | App1-VPC        | eu-west-3b  | 10.0.2.0/24     |
+| App2-Private-AZ1      | App2-VPC        | eu-west-3a  | 10.1.1.0/24     |
+| App2-Private-AZ2      | App2-VPC        | eu-west-3b  | 10.1.2.0/24     |
 
 
 ## Configuring Internet and Route Tables 🌐🚀
