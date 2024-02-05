@@ -29,8 +29,8 @@ Moreover, while this centralized architecture is designed around a pair of share
 
 2. Create the subnets in each of the VPCs as described in the following table. In the next steps, you configure the route tables to make some of these subnets public.
 
-| Subnet name           | Tag             | VPC         | AZ           | IPv4 CIDR       |
-| --------------------- | --------------- | ----------- | ------------ | --------------- |
+| Subnet name           | Tag             | AZ         | IPv4           |
+| --------------------- | --------------- | ------------| -------------|
 | Egress-Public-AZ1     | Egress-VPC      | eu-west-3a  | 192.168.1.0/24  |
 | Egress-Public-AZ2     | Egress-VPC      | eu-west-3b  | 192.168.2.0/24  |
 | Egress-Private-AZ1    | Egress-VPC      | eu-west-3a  | 192.168.3.0/24  |
