@@ -140,3 +140,5 @@ Launch two EC2 instances, one in `App1-VPC` and the other in `App2-VPC` with the
 
 Repeat the configuration for the second EC2 instance in `App2-VPC`.
 
+Reference: [AWS Blog: Networking & Content Delivery](https://aws.amazon.com/blogs/networking-and-content-delivery/creating-a-single-internet-exit-point-from-multiple-vpcs-using-aws-transit-gateway/)
+
