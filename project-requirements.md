@@ -14,7 +14,7 @@ Moreover, while this centralized architecture is designed around a pair of share
 
 <img src="./Project-Images/Single-IGW.png" width="100" height="100">
 
-## Creating and Configuring the VPCs
+### Creating and Configuring the VPCs
 
 1. Create the following three VPCs: Egress-VPC, App1-VPC, and App2-VPC. Provide values for each, as shown in the following table. For more information, see [Getting Started with Amazon VPC](https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/GetStarted.html).
    
@@ -25,7 +25,7 @@ Moreover, while this centralized architecture is designed around a pair of share
    | App2-VPC     | 10.1.0.0/16     | No IPv6 CIDR Block | Default  |
 
 
-## Create Subnets in Each VPCs
+### Create Subnets in Each VPCs
 
 2. Create the subnets in each of the VPCs as described in the following table. In the next steps, you configure the route tables to make some of these subnets public.
 
@@ -41,14 +41,40 @@ Moreover, while this centralized architecture is designed around a pair of share
 | App2-Private-AZ2      | App2-VPC        | eu-west-3b  | 10.1.2.0/24     |
 
 
-## Configuring Internet and Route Tables 🌐🚀
+### Configuring Internet and Route Tables 🌐🚀
 
-3. Create and attach an internet gateway to the VPC Egress-VPC. Use IGW as the Name tag for this internet gateway.
+3. Create and attach an internet gateway to the VPC Egress-VPC. Use IGW as the Name tag for this internet gateway. For more information, see [Creating and Attaching an Internet Gateway](https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Internet_Gateway.html#Add_IGW_Attach_Gateway).
 
-4. Create a NAT gateway in the VPC Egress-VPC. Create only one NAT gateway for this example. In your production environment, you should create a NAT gateway for every Availability Zone in which you have a subnet and use the NAT gateway in the same Availability zone. For Subnet, enter Egress-Public-AZ1. For Elastic IP Allocation ID, choose Create new EIP.
+4. Create a NAT gateway in the VPC Egress-VPC. For more information, see [NAT gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html).Create only one NAT gateway for this example. In your production environment, you should create a NAT gateway for every Availability Zone in which you have a subnet and use the NAT gateway in the same Availability zone. 
+- For Subnet, enter Egress-Public-AZ1. 
+- For Elastic IP Allocation ID, choose Create new EIP.
 
 5. Create two new route tables in Egress-VPC. For Name tags, use Egress-Public-RT and Egress-Private-RT.
 
-6. Add a new default route in the route table Egress-Public-RT, with the destination set to 0.0.0.0/0. Associate the route with the internet gateway IGW. Then edit the subnet association and add both the Egress-Public-AZ1 and Egress-Public-AZ2 subnets to this route table.
+6. Add a new default route in the route table Egress-Public-RT, with the destination set to 0.0.0.0/0. Associate the route with the internet gateway IGW. For more information, see [Adding and Removing Routes from a route table](https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Route_Tables.html#AddRemoveRoutes). Then edit the subnet association and add both the Egress-Public-AZ1 and Egress-Public-AZ2 subnets to this route table.
 
 7. Add a new default route in the route table Egress-Private-RT, with the destination 0.0.0.0/0. Associate the route with the NAT gateway. Then edit the subnet association, adding both the Egress-Private-AZ1 and Egress-Private-AZ2 subnets to this route table.
+
+### Deploying and Configuring the Transit Gateway 🚀
+
+In the following steps, we guide you through the deployment of a new transit gateway and its configuration, seamlessly connecting it to all three VPCs while efficiently routing traffic to the internet through the NAT gateway. To achieve this, follow the steps outlined below:
+
+1. In the AWS VPC console:
+    - Navigate to **AWS Transit Gateway**.
+    - Create a new transit gateway, assigning it the name `TGW-Internet`.
+    - Add a suitable description for clarity.
+    - Ensure to uncheck both **Default route table propagation** and **Default route table association**.
+
+2. Access **Transit Gateway Attachments**:
+    - Create the necessary attachments following the details provided in the table below.
+
+| AWS Transit Gateway ID | Attachment Type | Attachment Name Tag | Subnet IDs                          |
+|------------------------|------------------|----------------------|-------------------------------------|
+| TGW-Internet           | VPC              | Egress-Attachment    | Egress-Private-AZ1, Egress-Private-AZ2 |
+| TGW-Internet           | VPC              | App1-Attachment      | App1-Private-AZ1, App1-Private-AZ2     |
+| TGW-Internet           | VPC              | App2-Attachment      | App2-Private-AZ1, App2-Private-AZ2     |
+
+
+By meticulously completing these steps, you establish a cohesive integration between the transit gateway and all three VPCs, paving the way for streamlined routing of internet-bound traffic through the designated NAT gateway.
+
+
